@@ -24,6 +24,7 @@ class CameraPickerConfig {
     this.enablePinchToZoom = true,
     this.enablePullToZoomInRecord = true,
     this.enableScaledPreview = true,
+    this.enableDefaultActions = true,
     this.shouldDeletePreviewFile = false,
     this.shouldAutoPreviewVideo = false,
     this.maximumRecordingDuration = const Duration(seconds: 15),
@@ -82,6 +83,10 @@ class CameraPickerConfig {
   /// Whether the camera preview should be scaled during captures.
   /// 拍摄过程中相机预览是否需要缩放
   final bool enableScaledPreview;
+
+  /// Whether to enable the default action item.
+  /// 是否启用默认操作项
+  final bool enableDefaultActions;
 
   /// {@template wechat_camera_picker.shouldDeletePreviewFile}
   /// Whether the preview file will be delete when pop.

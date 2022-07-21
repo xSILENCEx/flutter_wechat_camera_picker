@@ -1442,7 +1442,7 @@ class CameraPickerState extends State<CameraPicker>
                       return _focusingAreaWidget(cameraValue, constraints);
                     },
                   ),
-                  _contentBuilder(constraints),
+                  if (config.enableDefaultActions) _contentBuilder(constraints),
                   if (config.foregroundBuilder != null)
                     Positioned.fill(
                       child: config.foregroundBuilder!(context, _controller),
