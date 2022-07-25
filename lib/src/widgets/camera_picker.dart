@@ -245,7 +245,8 @@ class CameraPickerState extends State<CameraPicker>
   /// 通过常量全局 Key 获取当前选择器的主题
   ThemeData get theme => _theme;
 
-  CameraPickerTextDelegate get _textDelegate => Constants.textDelegate;
+  CameraPickerTextDelegate get _textDelegate =>
+      config.textDelegate ?? Constants.textDelegate;
 
   @override
   void initState() {
