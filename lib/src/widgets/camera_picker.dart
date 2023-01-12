@@ -45,7 +45,8 @@ class CameraPicker extends StatefulWidget {
     CameraPickerConfig pickerConfig = const CameraPickerConfig(),
     CameraPickerState Function()? createPickerState,
     bool useRootNavigator = true,
-    CameraPickerPageRoute<AssetEntity> Function(Widget picker)? pageRouteBuilder,
+    CameraPickerPageRoute<AssetEntity> Function(Widget picker)?
+        pageRouteBuilder,
     Locale? locale,
   }) {
     final Widget picker = CameraPicker(
@@ -57,7 +58,8 @@ class CameraPicker extends StatefulWidget {
       context,
       rootNavigator: useRootNavigator,
     ).push<AssetEntity>(
-      pageRouteBuilder?.call(picker) ?? CameraPickerPageRoute<AssetEntity>(builder: (_) => picker),
+      pageRouteBuilder?.call(picker) ??
+          CameraPickerPageRoute<AssetEntity>(builder: (_) => picker),
     );
   }
 
