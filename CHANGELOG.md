@@ -4,6 +4,63 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 3.6.5
+
+### Fixes
+
+- Correct sizes when using `cameraQuarterTurns`. (#149)
+
+## 3.6.4
+
+### Improvements
+
+- Improve stop-capturing experiences. (#146)
+- Precache captured images for better experiences. (#145)
+
+## 3.6.3
+
+### Improvements
+
+- Add the loading indicator when saving. (#140)
+
+## 3.6.2
+
+### Improvements
+
+- Bump `photo_manager` to explicitly remove the requirements of `requiredLegacyExternalStorage`.
+
+## 3.6.1
+
+### New features
+
+- Add torch flashlight support. (#137)
+
+## 3.6.0
+
+### New features
+
+- Upgrade `camera` to `0.10.x`. (#133)
+- Upgrade `photo_maanger` for Android 13. (#133)
+
+## 3.5.0+1
+
+### Fixes
+
+- Fix the too early `widget` access in `CameraPickerState`. (#124)
+
+## 3.5.0
+
+### New features
+
+- Support customize UI by override `State`s. (#113)
+
+### Improvements
+
+- Expose multiple internal widgets. (#113)
+- Re-export `CameraPicker`'s constructor. (#116)
+- Avoid duplicate entity saving. (#117)
+- Prevent switching cameras when taking picture or recording video. (#120)
+
 ## 3.4.0
 
 ### New features

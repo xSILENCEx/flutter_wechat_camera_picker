@@ -8,16 +8,17 @@ that can be found in the LICENSE file. -->
 [![pub package](https://img.shields.io/pub/v/wechat_camera_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_camera_picker)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_camera_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_camera_picker/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_camera_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_camera_picker/network)
-[![Build status](https://img.shields.io/github/workflow/status/fluttercandies/flutter_wechat_camera_picker/Build%20test?label=CI&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_camera_picker/actions?query=workflow%3A%22Build+test%22)
+[![Build status](https://img.shields.io/github/actions/workflow/status/fluttercandies/flutter_wechat_camera_picker/runnable.yml?branch=main&label=CI&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_camera_picker/actions/workflows/runnable.yml)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_wechat_camera_picker?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_wechat_camera_picker)
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_camera_picker?style=flat-square)](https://github.com/fluttercandies/flutter_wechat_camera_picker/blob/master/LICENSE)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
 Language: English | [中文简体](README-ZH.md)
 
-A **camera picker** which is an extension for
+A **camera picker** based on WeChat's UI which is a separate runnable extension to
 [wechat_assets_picker](https://pub.dev/packages/wechat_assets_picker).
-Based on `camera` for camera functions and `photo_manager` for asset implementation.
+The package based on `camera` for camera functions
+and `photo_manager` for asset implementation.
 
 ## Category 🗂
 
@@ -35,15 +36,19 @@ Based on `camera` for camera functions and `photo_manager` for asset implementat
 
 ## Features ✨
 
-- [x] 🔐 Non-nullable by default
-- [x] 💚 99% similar to WeChat style
-- [x] 📷 Picture taking support
-  - [x] ☀️ Exposure adjust support
-  - [x] 🔍️ Scale with pinch support
-- [x] 🎥 Video recording support
-  - [x] ⏱ Duration limitation support
-  - [x] 🔍 Scale when recording support
-- [x] 🖾 Foreground custom widget builder support
+- ♻️ Fully implementable with `State`s override
+- 💚 99% similar to WeChat style
+- 📷 Picture taking support
+- 🎥 Video recording support
+  - ⏱ Duration limitation support
+  - 🔍 Scale when recording support
+- ☀️ Exposure adjust support
+- 🔍️ Scale with pinch support
+- 💱 i18n support
+  - ⏪ RTL language support
+- 🎏 Fully customizable theme
+- 🖾 Foreground custom widget builder support
+- 🕹️ Intercept saving with custom process
 
 ## Screenshots 📸
 
@@ -55,12 +60,28 @@ Based on `camera` for camera functions and `photo_manager` for asset implementat
 
 ### Version constraints
 
-Flutter SDK: `>=2.0.0` .
+Flutter SDK: `>=2.2.0` .
 
 ### Setup
 
 - [wechat_assets_picker#preparing-for-use](https://github.com/fluttercandies/flutter_wechat_assets_picker#preparing-for-use-)
 - [camera#installation](https://pub.dev/packages/camera#installation)
+
+#### Android 13 (API 33) permissions
+
+If you don't need to take photos or videos,
+consider removing relevant permission in your apps, more specifically:
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.your.app">
+    <!-- Add this if you need to take photos. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- Add this if you need to take videos. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+</manifest>
+```
 
 ## Usage 📖
 
@@ -83,31 +104,41 @@ final AssetEntity? entity = await CameraPicker.pickFromCamera(
 
 Fields in `CameraPickerConfig`:
 
-| Name                         | Type                        | Description                                                                                           | Default Value                          |
-|------------------------------|-----------------------------|-------------------------------------------------------------------------------------------------------|----------------------------------------|
-| enableRecording              | `bool`                      | Whether the picker can record video.                                                                  | `false`                                |
-| onlyEnableRecording          | `bool`                      | Whether the picker can only record video. Only available when `enableRecording` is `true `.           | `false`                                |
-| enableTapRecording           | `bool`                      | Whether allow the record can start with single tap. Only available when `enableRecording` is `true `. | `false`                                |
-| enableAudio                  | `bool`                      | Whether Whether the picker should record audio. Only available with recording.                        | `true`                                 |
-| enableSetExposure            | `bool`                      | Whether users can set the exposure point by tapping.                                                  | `true`                                 |
-| enableExposureControlOnPoint | `bool`                      | Whether users can adjust exposure according to the set point.                                         | `true`                                 |
-| enablePinchToZoom            | `bool`                      | Whether users can zoom the camera by pinch.                                                           | `true`                                 |
-| enablePullToZoomInRecord     | `bool`                      | Whether users can zoom by pulling up when recording video.                                            | `true`                                 |
-| shouldDeletePreviewFile      | `bool`                      | Whether the preview file will be delete when pop.                                                     | `false`                                |
-| shouldAutoPreviewVideo       | `bool`                      | Whether the video should be played instantly in the preview.                                          | `false`                                |
-| maximumRecordingDuration     | `Duration`                  | The maximum duration of the video recording process.                                                  | `const Duration(seconds: 15)`          |
-| theme                        | `ThemeData?`                | Theme data for the picker.                                                                            | `CameraPicker.themeData(C.themeColor)` |
-| textDelegate                 | `CameraPickerTextDelegate?` | Text delegate that controls text in widgets.                                                          | `DefaultCameraPickerTextDelegate`      |
-| resolutionPreset             | `ResolutionPreset`          | Present resolution for the camera.                                                                    | `ResolutionPreset.max`                 |
-| cameraQuarterTurns           | `int`                       | The number of clockwise quarter turns the camera view should be rotated.                              | `0`                                    |
-| imageFormatGroup             | `ImageFormatGroup`          | Describes the output of the raw image format.                                                         | `ImageFormatGroup.unknown`             |
-| preferredLensDirection       | `CameraLensDirection`       | Which lens direction is preferred when first using the camera.                                        | `CameraLensDirection.back`             |
-| lockCaptureOrientation       | `DeviceOrientation?`        | Whether the camera should be locked to the specific orientation during captures.                      | null                                   |
-| foregroundBuilder            | `ForegroundBuilder?`        | The foreground widget builder which will cover the whole camera preview.                              | null                                   |
-| previewTransformBuilder      | `PreviewTransformBuilder?`  | The widget builder which will transform the camera preview.                                           | null                                   |
-| onEntitySaving               | `EntitySaveCallback?`       | The callback type define for saving entity in the viewer.                                             | null                                   |
-| onError                      | `CameraErrorHandler?`       | The error handler when any error occurred during the picking process.                                 | null                                   |
-| onXFileCaptured              | `XFileCapturedCallback?`    | The callback type definition when the XFile is captured by the camera.                                | null                                   |
+| Name                         | Type                        | Description                                                                                           | Default Value                              |
+|------------------------------|-----------------------------|-------------------------------------------------------------------------------------------------------|--------------------------------------------|
+| enableRecording              | `bool`                      | Whether the picker can record video.                                                                  | `false`                                    |
+| onlyEnableRecording          | `bool`                      | Whether the picker can only record video. Only available when `enableRecording` is `true `.           | `false`                                    |
+| enableTapRecording           | `bool`                      | Whether allow the record can start with single tap. Only available when `enableRecording` is `true `. | `false`                                    |
+| enableAudio                  | `bool`                      | Whether Whether the picker should record audio. Only available with recording.                        | `true`                                     |
+| enableSetExposure            | `bool`                      | Whether users can set the exposure point by tapping.                                                  | `true`                                     |
+| enableExposureControlOnPoint | `bool`                      | Whether users can adjust exposure according to the set point.                                         | `true`                                     |
+| enablePinchToZoom            | `bool`                      | Whether users can zoom the camera by pinch.                                                           | `true`                                     |
+| enablePullToZoomInRecord     | `bool`                      | Whether users can zoom by pulling up when recording video.                                            | `true`                                     |
+| shouldDeletePreviewFile      | `bool`                      | Whether the preview file will be delete when pop.                                                     | `false`                                    |
+| shouldAutoPreviewVideo       | `bool`                      | Whether the video should be played instantly in the preview.                                          | `false`                                    |
+| maximumRecordingDuration     | `Duration`                  | The maximum duration of the video recording process.                                                  | `const Duration(seconds: 15)`              |
+| theme                        | `ThemeData?`                | Theme data for the picker.                                                                            | `CameraPicker.themeData(wechatThemeColor)` |
+| textDelegate                 | `CameraPickerTextDelegate?` | Text delegate that controls text in widgets.                                                          | `CameraPickerTextDelegate`                 |
+| resolutionPreset             | `ResolutionPreset`          | Present resolution for the camera.                                                                    | `ResolutionPreset.max`                     |
+| cameraQuarterTurns           | `int`                       | The number of clockwise quarter turns the camera view should be rotated.                              | `0`                                        |
+| imageFormatGroup             | `ImageFormatGroup`          | Describes the output of the raw image format.                                                         | `ImageFormatGroup.unknown`                 |
+| preferredLensDirection       | `CameraLensDirection`       | Which lens direction is preferred when first using the camera.                                        | `CameraLensDirection.back`                 |
+| lockCaptureOrientation       | `DeviceOrientation?`        | Whether the camera should be locked to the specific orientation during captures.                      | null                                       |
+| foregroundBuilder            | `ForegroundBuilder?`        | The foreground widget builder which will cover the whole camera preview.                              | null                                       |
+| previewTransformBuilder      | `PreviewTransformBuilder?`  | The widget builder which will transform the camera preview.                                           | null                                       |
+| onEntitySaving               | `EntitySaveCallback?`       | The callback type define for saving entity in the viewer.                                             | null                                       |
+| onError                      | `CameraErrorHandler?`       | The error handler when any error occurred during the picking process.                                 | null                                       |
+| onXFileCaptured              | `XFileCapturedCallback?`    | The callback type definition when the XFile is captured by the camera.                                | null                                       |
+
+### Using custom `State`s
+
+All user interface can be customized through custom `State`s, including:
+- `CameraPickerState`
+- `CameraPickerViewerState`
+
+After override `State`s, pass them through the picking method, more specifically:
+- `CameraPicker.pickFromCamera(createPickerState: () => CustomCameraPickerState());`
+- `CameraPickerViewer.pushToViewer(..., createViewerState: () => CustomCameraPickerViewerState());`
 
 ## Frequently asked question 💭
 

@@ -4,21 +4,23 @@
 
 import 'dart:math' as math;
 
-import 'package:bindings_compatible/bindings_compatible.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/styles.dart';
+import '../internals/methods.dart';
 
-class CircularProgressBar extends StatefulWidget {
-  const CircularProgressBar({
+class CameraProgressButton extends StatefulWidget {
+  const CameraProgressButton({
     Key? key,
+    required this.isAnimating,
     required this.outerRadius,
     required this.ringsWidth,
-    this.ringsColor = C.themeColor,
+    this.ringsColor = wechatThemeColor,
     this.progress = 0.0,
     this.duration = const Duration(seconds: 15),
   }) : super(key: key);
 
+  final bool isAnimating;
   final double outerRadius;
   final double ringsWidth;
   final Color ringsColor;
@@ -26,10 +28,10 @@ class CircularProgressBar extends StatefulWidget {
   final Duration duration;
 
   @override
-  State<CircularProgressBar> createState() => _CircleProgressState();
+  State<CameraProgressButton> createState() => _CircleProgressState();
 }
 
-class _CircleProgressState extends State<CircularProgressBar>
+class _CircleProgressState extends State<CameraProgressButton>
     with SingleTickerProviderStateMixin {
   final GlobalKey paintKey = GlobalKey();
 
@@ -41,9 +43,23 @@ class _CircleProgressState extends State<CircularProgressBar>
   @override
   void initState() {
     super.initState();
-    useWidgetsBinding().addPostFrameCallback((Duration _) {
-      progressController.forward();
+    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((_) {
+      if (widget.isAnimating) {
+        progressController.forward();
+      }
     });
+  }
+
+  @override
+  void didUpdateWidget(CameraProgressButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isAnimating != oldWidget.isAnimating) {
+      if (widget.isAnimating) {
+        progressController.forward();
+      } else {
+        progressController.stop();
+      }
+    }
   }
 
   @override
@@ -56,15 +72,17 @@ class _CircleProgressState extends State<CircularProgressBar>
   Widget build(BuildContext context) {
     final Size size = Size.square(widget.outerRadius * 2);
     return Center(
-      child: AnimatedBuilder(
-        animation: progressController,
-        builder: (_, __) => CustomPaint(
-          key: paintKey,
-          size: size,
-          painter: ProgressPainter(
-            progress: progressController.value,
-            ringsWidth: widget.ringsWidth,
-            ringsColor: widget.ringsColor,
+      child: RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: progressController,
+          builder: (_, __) => CustomPaint(
+            key: paintKey,
+            size: size,
+            painter: CameraProgressButtonPainter(
+              progress: progressController.value,
+              ringsWidth: widget.ringsWidth,
+              ringsColor: widget.ringsColor,
+            ),
           ),
         ),
       ),
@@ -72,8 +90,8 @@ class _CircleProgressState extends State<CircularProgressBar>
   }
 }
 
-class ProgressPainter extends CustomPainter {
-  const ProgressPainter({
+class CameraProgressButtonPainter extends CustomPainter {
+  const CameraProgressButtonPainter({
     required this.ringsWidth,
     required this.ringsColor,
     required this.progress,
@@ -88,8 +106,6 @@ class ProgressPainter extends CustomPainter {
     final double center = size.width / 2;
     final Offset offsetCenter = Offset(center, center);
     final double drawRadius = size.width / 2 - ringsWidth;
-    final double angle = 360.0 * progress;
-    final double radians = angle.toRad;
 
     final double outerRadius = center;
     final double innerRadius = center - ringsWidth * 2;
@@ -97,7 +113,7 @@ class ProgressPainter extends CustomPainter {
     final double progressWidth = outerRadius - innerRadius;
     canvas.save();
     canvas.translate(0.0, size.width);
-    canvas.rotate(-90.0.toRad);
+    canvas.rotate(-math.pi / 2);
     final Rect arcRect = Rect.fromCircle(
       center: offsetCenter,
       radius: drawRadius,
@@ -107,14 +123,14 @@ class ProgressPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = progressWidth;
     canvas
-      ..drawArc(arcRect, 0, radians, false, progressPaint)
+      ..drawArc(arcRect, 0, math.pi * 2 * progress, false, progressPaint)
       ..restore();
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
-}
-
-extension _MathExtension on double {
-  double get toRad => this * (math.pi / 180.0);
+  bool shouldRepaint(CameraProgressButtonPainter oldDelegate) {
+    return oldDelegate.ringsWidth != ringsWidth ||
+        oldDelegate.ringsColor != ringsColor ||
+        oldDelegate.progress != progress;
+  }
 }
