@@ -2,8 +2,6 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -35,7 +33,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'WeChat Camera Picker Demo',
       theme: ThemeData(
-        brightness: MediaQueryData.fromWindow(ui.window).platformBrightness,
+        brightness: MediaQueryData.fromView(View.of(context)).platformBrightness,
         primarySwatch: themeColor.swatch,
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: themeColor,

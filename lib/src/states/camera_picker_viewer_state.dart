@@ -24,8 +24,7 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
   /// 播放器是否在播放
   final ValueNotifier<bool> isPlaying = ValueNotifier<bool>(false);
 
-  late final ThemeData theme =
-      widget.pickerConfig.theme ?? CameraPicker.themeData(wechatThemeColor);
+  late final ThemeData theme = widget.pickerConfig.theme ?? CameraPicker.themeData(wechatThemeColor);
 
   /// Construct an [File] instance through [previewXFile].
   /// 通过 [previewXFile] 构建 [File] 实例。
@@ -33,8 +32,7 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
 
   /// Controller for the video player.
   /// 视频播放的控制器
-  late final VideoPlayerController videoController =
-      VideoPlayerController.file(previewFile);
+  late final VideoPlayerController videoController = VideoPlayerController.file(previewFile);
 
   /// Whether the controller is playing.
   /// 播放控制器是否在播放
@@ -167,8 +165,7 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
             );
             break;
         }
-        if (widget.pickerConfig.shouldDeletePreviewFile &&
-            previewFile.existsSync()) {
+        if (widget.pickerConfig.shouldDeletePreviewFile && previewFile.existsSync()) {
           previewFile.delete();
         }
         return;
@@ -271,7 +268,7 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
       child: Text(
         Constants.textDelegate.confirm,
         style: TextStyle(
-          color: theme.textTheme.bodyText1?.color,
+          color: theme.textTheme.bodyLarge?.color,
           fontSize: 17,
           fontWeight: FontWeight.normal,
         ),
@@ -386,8 +383,7 @@ class _WechatLoading extends StatefulWidget {
   State<_WechatLoading> createState() => _WechatLoadingState();
 }
 
-class _WechatLoadingState extends State<_WechatLoading>
-    with SingleTickerProviderStateMixin {
+class _WechatLoadingState extends State<_WechatLoading> with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 2),
     vsync: this,

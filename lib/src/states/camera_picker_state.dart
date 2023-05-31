@@ -29,8 +29,7 @@ import '../widgets/camera_progress_button.dart';
 const Color _lockedColor = Colors.amber;
 const Duration _kDuration = Duration(milliseconds: 300);
 
-class CameraPickerState extends State<CameraPicker>
-    with WidgetsBindingObserver {
+class CameraPickerState extends State<CameraPicker> with WidgetsBindingObserver {
   /// The [Duration] for record detection. (200ms)
   /// 检测是否开始录制的时长 (200毫秒)
   final Duration recordDetectDuration = const Duration(milliseconds: 200);
@@ -121,11 +120,9 @@ class CameraPickerState extends State<CameraPicker>
 
   bool get enableRecording => pickerConfig.enableRecording;
 
-  bool get onlyEnableRecording =>
-      enableRecording && pickerConfig.onlyEnableRecording;
+  bool get onlyEnableRecording => enableRecording && pickerConfig.onlyEnableRecording;
 
-  bool get enableTapRecording =>
-      onlyEnableRecording && pickerConfig.enableTapRecording;
+  bool get enableTapRecording => onlyEnableRecording && pickerConfig.enableTapRecording;
 
   /// No audio integration required when it's only for camera.
   /// 在仅允许拍照时不需要启用音频
@@ -133,16 +130,13 @@ class CameraPickerState extends State<CameraPicker>
 
   /// Whether the picker needs to prepare for video recording on iOS.
   /// 是否需要为 iOS 的录制视频执行准备操作
-  bool get shouldPrepareForVideoRecording =>
-      enableRecording && enableAudio && Platform.isIOS;
+  bool get shouldPrepareForVideoRecording => enableRecording && enableAudio && Platform.isIOS;
 
-  bool get enablePullToZoomInRecord =>
-      enableRecording && pickerConfig.enablePullToZoomInRecord;
+  bool get enablePullToZoomInRecord => enableRecording && pickerConfig.enablePullToZoomInRecord;
 
   /// Whether the recording restricted to a specific duration.
   /// 录像是否有限制的时长
-  bool get isRecordingRestricted =>
-      pickerConfig.maximumRecordingDuration != null;
+  bool get isRecordingRestricted => pickerConfig.maximumRecordingDuration != null;
 
   /// A getter to the current [CameraDescription].
   /// 获取当前相机实例
@@ -150,8 +144,7 @@ class CameraPickerState extends State<CameraPicker>
 
   /// If there's no theme provided from the user, use [CameraPicker.themeData] .
   /// 如果用户未提供主题，通过 [CameraPicker.themeData] 创建。
-  late final ThemeData theme =
-      pickerConfig.theme ?? CameraPicker.themeData(wechatThemeColor);
+  late final ThemeData theme = pickerConfig.theme ?? CameraPicker.themeData(wechatThemeColor);
 
   CameraPickerTextDelegate get textDelegate => Constants.textDelegate;
 
@@ -159,14 +152,13 @@ class CameraPickerState extends State<CameraPicker>
   void initState() {
     super.initState();
     ambiguate(WidgetsBinding.instance)?.addObserver(this);
-    Constants.textDelegate = widget.pickerConfig.textDelegate ??
-        cameraPickerTextDelegateFromLocale(widget.locale);
+    Constants.textDelegate = widget.pickerConfig.textDelegate ?? cameraPickerTextDelegateFromLocale(widget.locale);
 
     // TODO(Alex): Currently hide status bar will cause the viewport shaking on Android.
     /// Hide system status bar automatically when the platform is not Android.
     /// 在非 Android 设备上自动隐藏状态栏
     if (!Platform.isAndroid) {
-      SystemChrome.setEnabledSystemUIOverlays(<SystemUiOverlay>[]);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: <SystemUiOverlay>[]);
     }
 
     initCameras();
@@ -175,7 +167,7 @@ class CameraPickerState extends State<CameraPicker>
   @override
   void dispose() {
     if (!Platform.isAndroid) {
-      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
     }
     ambiguate(WidgetsBinding.instance)?.removeObserver(this);
     innerController?.dispose();
@@ -214,8 +206,7 @@ class CameraPickerState extends State<CameraPicker>
     // Fetch the biggest size from the constraints.
     Size size = constraints.biggest;
     // Flip the size when the preview needs to turn with an odd count of quarters.
-    if ((turns.isOdd && orientation.contains('portrait')) ||
-        (turns.isEven && orientation.contains('landscape'))) {
+    if ((turns.isOdd && orientation.contains('portrait')) || (turns.isEven && orientation.contains('landscape'))) {
       size = size.flipped;
     }
     // Calculate scale depending on the size and camera ratios.
@@ -273,8 +264,7 @@ class CameraPickerState extends State<CameraPicker>
       }
 
       final int preferredIndex = cameras.indexWhere(
-        (CameraDescription e) =>
-            e.lensDirection == pickerConfig.preferredLensDirection,
+        (CameraDescription e) => e.lensDirection == pickerConfig.preferredLensDirection,
       );
       final int index;
       if (preferredIndex != -1 && c == null) {
@@ -312,23 +302,12 @@ class CameraPickerState extends State<CameraPicker>
         await Future.wait(
           <Future<void>>[
             if (pickerConfig.lockCaptureOrientation != null)
-              newController
-                  .lockCaptureOrientation(pickerConfig.lockCaptureOrientation),
-            newController
-                .getExposureOffsetStepSize()
-                .then((double value) => exposureStep = value),
-            newController
-                .getMaxExposureOffset()
-                .then((double value) => maxAvailableExposureOffset = value),
-            newController
-                .getMinExposureOffset()
-                .then((double value) => minAvailableExposureOffset = value),
-            newController
-                .getMaxZoomLevel()
-                .then((double value) => maxAvailableZoom = value),
-            newController
-                .getMinZoomLevel()
-                .then((double value) => minAvailableZoom = value),
+              newController.lockCaptureOrientation(pickerConfig.lockCaptureOrientation),
+            newController.getExposureOffsetStepSize().then((double value) => exposureStep = value),
+            newController.getMaxExposureOffset().then((double value) => maxAvailableExposureOffset = value),
+            newController.getMinExposureOffset().then((double value) => minAvailableExposureOffset = value),
+            newController.getMaxZoomLevel().then((double value) => maxAvailableZoom = value),
+            newController.getMinZoomLevel().then((double value) => minAvailableZoom = value),
           ],
           eagerError: true,
         );
@@ -477,8 +456,7 @@ class CameraPickerState extends State<CameraPicker>
     isFocusPointDisplays.value = false;
     // Ignore point update when the new point is less than 8% and higher than
     // 92% of the screen's height.
-    if (position.dy < constraints.maxHeight / 12 ||
-        position.dy > constraints.maxHeight / 12 * 11) {
+    if (position.dy < constraints.maxHeight / 12 || position.dy > constraints.maxHeight / 12 * 11) {
       return;
     }
     realDebugPrint(
@@ -644,8 +622,7 @@ class CameraPickerState extends State<CameraPicker>
     try {
       await controller.startVideoRecording();
       if (isRecordingRestricted) {
-        recordCountdownTimer =
-            Timer(pickerConfig.maximumRecordingDuration!, () {
+        recordCountdownTimer = Timer(pickerConfig.maximumRecordingDuration!, () {
           stopRecordingVideo();
         });
       }
@@ -836,9 +813,7 @@ class CameraPickerState extends State<CameraPicker>
       ),
       onPressed: switchCameras,
       icon: Icon(
-        Platform.isIOS
-            ? Icons.flip_camera_ios_outlined
-            : Icons.flip_camera_android_outlined,
+        Platform.isIOS ? Icons.flip_camera_ios_outlined : Icons.flip_camera_android_outlined,
         size: 24,
       ),
     );
@@ -969,12 +944,8 @@ class CameraPickerState extends State<CameraPicker>
                 Center(
                   child: AnimatedContainer(
                     duration: kThemeChangeDuration,
-                    width: isShootingButtonAnimate
-                        ? outerSize.width
-                        : innerSize.width,
-                    height: isShootingButtonAnimate
-                        ? outerSize.height
-                        : innerSize.height,
+                    width: isShootingButtonAnimate ? outerSize.width : innerSize.width,
+                    height: isShootingButtonAnimate ? outerSize.height : innerSize.height,
                     padding: EdgeInsets.all(isShootingButtonAnimate ? 41 : 11),
                     decoration: BoxDecoration(
                       color: theme.canvasColor.withOpacity(0.85),
@@ -988,8 +959,7 @@ class CameraPickerState extends State<CameraPicker>
                     ),
                   ),
                 ),
-                if ((innerController?.value.isRecordingVideo ?? false) &&
-                    isRecordingRestricted)
+                if ((innerController?.value.isRecordingVideo ?? false) && isRecordingRestricted)
                   CameraProgressButton(
                     isAnimating: isShootingButtonAnimate,
                     duration: pickerConfig.maximumRecordingDuration!,
@@ -1119,8 +1089,7 @@ class CameraPickerState extends State<CameraPicker>
     Widget buildFromPoint(Offset point) {
       const double controllerWidth = 20;
       final double pointWidth = constraints.maxWidth / 5;
-      final double exposureControlWidth =
-          pickerConfig.enableExposureControlOnPoint ? controllerWidth : 0;
+      final double exposureControlWidth = pickerConfig.enableExposureControlOnPoint ? controllerWidth : 0;
       final double width = pointWidth + exposureControlWidth + 2;
       final bool shouldReverseLayout = point.dx > constraints.maxWidth / 4 * 3;
       final double effectiveLeft = math.min(
@@ -1138,16 +1107,14 @@ class CameraPickerState extends State<CameraPicker>
         height: pointWidth * 3,
         child: ExcludeSemantics(
           child: Row(
-            textDirection:
-                shouldReverseLayout ? TextDirection.rtl : TextDirection.ltr,
+            textDirection: shouldReverseLayout ? TextDirection.rtl : TextDirection.ltr,
             children: <Widget>[
               CameraFocusPoint(
                 key: ValueKey<int>(DateTime.now().millisecondsSinceEpoch),
                 size: pointWidth,
                 color: theme.iconTheme.color!,
               ),
-              if (pickerConfig.enableExposureControlOnPoint)
-                const SizedBox(width: 2),
+              if (pickerConfig.enableExposureControlOnPoint) const SizedBox(width: 2),
               if (pickerConfig.enableExposureControlOnPoint)
                 SizedBox.fromSize(
                   size: Size(exposureControlWidth, pointWidth * 3),
@@ -1222,19 +1189,15 @@ class CameraPickerState extends State<CameraPicker>
       onPointerUp: (_) => pointers--,
       child: GestureDetector(
         onScaleStart: pickerConfig.enablePinchToZoom ? handleScaleStart : null,
-        onScaleUpdate:
-            pickerConfig.enablePinchToZoom ? handleScaleUpdate : null,
+        onScaleUpdate: pickerConfig.enablePinchToZoom ? handleScaleUpdate : null,
         // Enabled cameras switching by default if we have multiple cameras.
         onDoubleTap: cameras.length > 1 ? switchCameras : null,
-        child: innerController != null
-            ? CameraPreview(controller)
-            : const SizedBox.shrink(),
+        child: innerController != null ? CameraPreview(controller) : const SizedBox.shrink(),
       ),
     );
 
     // Make a transformed widget if it's defined.
-    final Widget? transformedWidget =
-        pickerConfig.previewTransformBuilder?.call(
+    final Widget? transformedWidget = pickerConfig.previewTransformBuilder?.call(
       context,
       controller,
       preview,
@@ -1320,16 +1283,14 @@ class CameraPickerState extends State<CameraPicker>
               ),
             ),
           ),
-          if (pickerConfig.enableSetExposure)
-            buildExposureDetector(context, constraints),
+          if (pickerConfig.enableSetExposure) buildExposureDetector(context, constraints),
           buildInitializeWrapper(
             builder: (CameraValue v, _) => buildFocusingPoint(
               cameraValue: v,
               constraints: constraints,
             ),
           ),
-          if (pickerConfig.enableDefaultActions)
-            buildForegroundBody(context, constraints),
+          if (pickerConfig.enableDefaultActions) buildForegroundBody(context, constraints),
           if (pickerConfig.foregroundBuilder != null)
             Positioned.fill(
               child: pickerConfig.foregroundBuilder!(context, innerController),
@@ -1352,9 +1313,7 @@ class CameraPickerState extends State<CameraPicker>
             quarterTurns: pickerConfig.cameraQuarterTurns,
             child: MediaQuery(
               data: mq.copyWith(
-                size: pickerConfig.cameraQuarterTurns.isOdd
-                    ? mq.size.flipped
-                    : mq.size,
+                size: pickerConfig.cameraQuarterTurns.isOdd ? mq.size.flipped : mq.size,
               ),
               child: Builder(builder: buildBody),
             ),
