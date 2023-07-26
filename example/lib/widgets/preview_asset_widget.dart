@@ -46,7 +46,7 @@ class _PreviewAssetWidgetState extends State<PreviewAssetWidget> {
     if (Platform.isAndroid) {
       controller = VideoPlayerController.contentUri(Uri.parse(url));
     } else {
-      controller = VideoPlayerController.network(url);
+      controller = VideoPlayerController.networkUrl(Uri.parse(url));
     }
     _playerController = controller;
     try {
